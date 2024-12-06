@@ -1,17 +1,17 @@
 const corsAnywhere = require('cors-anywhere');
 
 const corsServer = corsAnywhere.createServer({
-  originWhitelist: [],  // Permitir todas las solicitudes. O puedes añadir dominios específicos aquí.
-  requireHeader: ['origin', 'x-requested-with'],
-  removeHeaders: ['cookie', 'cookie2']
+    originWhitelist: [], // Permite todos los orígenes. Puedes especificar los permitidos aquí.
+    requireHeader: ['origin', 'x-requested-with'],
+    removeHeaders: ['cookie', 'cookie2'],
+    setHeaders: { // Agrega los encabezados CORS
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    }
 });
 
-// Incluir los encabezados CORS en la respuesta
 module.exports = (req, res) => {
-  // Agregar los encabezados CORS antes de manejar la solicitud
-  res.setHeader('Access-Control-Allow-Origin', '*');  // Permitir todas las solicitudes de origen
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-
-  corsServer.emit('request', req, res);
+    // Redirigir el tráfico al proxy
+    corsServer.emit('request', req, res);
 };
